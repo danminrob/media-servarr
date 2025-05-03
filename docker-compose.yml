@@ -1,16 +1,14 @@
-version: "3.0"
-
 networks:
   proxy:
-    external: true
+    #external: true
   jellyfin_default:
-    external: true
+    #external: true
   starr:
-    external: true
+    #external: true
   jellystat:
-    external: true
+    #external: true
   gluetun_network:
-    external: true
+    #external: true
       
 services:
   # REVERSE PROXY IS IN OTHER DOCKER COMPOSE STACK
@@ -38,6 +36,18 @@ services:
       - proxy
       - starr
     
+  #Navidrome - Your Personal Music Streaming Service 
+  navidrome:
+    image: deluan/navidrome:latest
+    container_name: navidrome
+    user: 1000:1000
+    ports:
+      - 4533:4533
+    restart: unless-stopped
+    volumes:
+      - ${BASE_PATH}\navidrome\data:/data
+      - ${MEDIA_SHARE}\media\music:/music:ro
+    
   #Radarr - used to find movies automatically
   radarr:
     image: lscr.io/linuxserver/radarr:latest
@@ -47,15 +57,15 @@ services:
       - PGID=${PGID}
       - TZ=${TZ}
     volumes:
-      - ${BASE_PATH}/radarr/config:/config
+      - ${BASE_PATH}\radarr\config:/config
       - ${MEDIA_SHARE}:/data #Access to the entire /media
     ports:
       - 7878:7878
     networks:
       proxy:
       starr:
-      gluetun_network:
-        ipv4_address: ${RADARR_IPV4}
+      #gluetun_network:
+        #ipv4_address: ${RADARR_IPV4}
     restart: unless-stopped
     
   #Sonarr - used to find shows automatically
@@ -67,15 +77,15 @@ services:
       - PGID=${PGID}
       - TZ=${TZ}
     volumes:
-      - ${BASE_PATH}/sonarr/config:/config
+      - ${BASE_PATH}\sonarr\config:/config
       - ${MEDIA_SHARE}:/data #Access to the entire /media
     ports:
       - 8989:8989
     networks:
       proxy:
       starr:
-      gluetun_network:
-        ipv4_address: ${SONARR_IPV4}
+      #gluetun_network:
+        #ipv4_address: ${SONARR_IPV4}
     restart: unless-stopped
   
   #Readarr - Used to download books
@@ -87,7 +97,7 @@ services:
       - PGID=${PGID}
       - TZ=${TZ}
     volumes:
-      - ${BASE_PATH}/readarr/config:/config
+      - ${BASE_PATH}\readarr\config:/config
       - ${MEDIA_SHARE}:/data
     ports:
       - 8787:8787
@@ -105,7 +115,7 @@ services:
       - PGID=${PGID}
       - TZ=${TZ}
     volumes:
-      - ${BASE_PATH}/lidarr/config:/config
+      - ${BASE_PATH}\lidarr\config:/config
       - ${MEDIA_SHARE}:/data
     ports:
       - 8686:8686
@@ -118,14 +128,16 @@ services:
   kapowarr:
     image: 'mrcas/kapowarr:latest'
     container_name: kapowarr
-    network_mode: "service:gluetun"
+    #network_mode: "service:gluetun"
+    ports:
+      - 5656:5656
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TZ}
     volumes:
-      - ${BASE_PATH}/kapowarr/config:/app/db
-      - ${MEDIA_SHARE}/temp_downloads:/app/temp_downloads
+      - ${BASE_PATH}\kapowarr\config:/app/db
+      - ${MEDIA_SHARE}\temp_downloads:/app/temp_downloads
       - ${MEDIA_SHARE}:/data
     restart: unless-stopped
     
@@ -133,13 +145,15 @@ services:
   prowlarr:
     image: lscr.io/linuxserver/prowlarr:latest
     container_name: prowlarr
-    network_mode: "service:gluetun"
+    #network_mode: "service:gluetun"
+    ports:
+      - 9696:9696
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TZ}
     volumes:
-      - ${BASE_PATH}/prowlarr/config:/config
+      - ${BASE_PATH}\prowlarr\config:/config
     restart: unless-stopped
     
   #Autobrr - used to grab torrents using the trackers IRC channel - Increases seeding due to grabbing content before RSS feed
@@ -147,13 +161,13 @@ services:
     container_name: autobrr
     image: ghcr.io/autobrr/autobrr:latest
     restart: unless-stopped
-    network_mode: "service:gluetun"
+    #network_mode: "service:gluetun"
     environment:
       - TZ=${TZ}
       - PUID=${PUID}
       - PGID=${PGID}
     volumes:
-      - ${BASE_PATH}/autobrr/config:/config
+      - ${BASE_PATH}\autobrr\config:/config
 
   #jellyseer - allows users to request media on their own
   jellyseerr:
@@ -164,8 +178,8 @@ services:
       - PGID=${PGID}
       - TZ=${TZ}
     volumes:
-      - ${BASE_PATH}/jellyseerr/config:/app/config
-      - ${MEDIA_SHARE}:/data #Access to the entire ${BASE_PATH}
+      - ${BASE_PATH}\jellyseerr\config:/app/config
+      - ${MEDIA_SHARE}:/data #Access to the entire ${MEDIA_SHARE}
     networks:
       - proxy
       - starr
@@ -178,7 +192,9 @@ services:
     # DockerHub mirror flaresolverr/flaresolverr:latest
     image: alexfozor/flaresolverr:pr-1300-experimental
     container_name: flaresolverr
-    network_mode: "service:gluetun"
+    ports:
+      - 8191:8191
+    #network_mode: "service:gluetun"
     environment:
       - LOG_LEVEL=info
       - LOG_HTML=false
@@ -194,16 +210,22 @@ services:
   qbittorrent:
     image: lscr.io/linuxserver/qbittorrent:latest
     container_name: qbittorrent
-    network_mode: "service:gluetun"
+    #network_mode: "service:gluetun"
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TZ}
-      - WEBUI_PORT=8080
+      - WEBUI_PORT=1337
       - TORRENTING_PORT=8694 #Make sure to port forward this port in your router so you can seed more effectively
       - UMASK=002
+    networks:
+      - default
+      - starr
+    ports:
+      - 1337:1337
+      - 1338:1338
     volumes:
-      - ${BASE_PATH}/qbittorent/config:/config
+      - ${BASE_PATH}\qbittorent\config:/config
       - ${MEDIA_SHARE}:/data
     restart: unless-stopped
 
@@ -230,9 +252,9 @@ services:
       - inContainer=true
       - ffmpegVersion=6
     volumes:
-      - ${BASE_PATH}/tdarr/server:/app/server
-      - ${BASE_PATH}/tdarr/configs:/app/configs
-      - ${BASE_PATH}/tdarr/logs:/app/logs
+      - ${BASE_PATH}\tdarr\server:/app/server
+      - ${BASE_PATH}\tdarr\configs:/app/configs
+      - ${BASE_PATH}\tdarr\logs:/app/logs
       - ${MEDIA_SHARE}:/data
       - ${TRANSCODE_PATH:-/transcode_cache}:/temp
     devices:
@@ -250,7 +272,7 @@ services:
       - PGID=${PGID}
       - TZ=${TZ}
     volumes:
-      - ${BASE_PATH}/bazarr/config:/config
+      - ${BASE_PATH}\bazarr\config:/config
       - ${MEDIA_SHARE}:/data
     ports:
       - 6767:6767
@@ -264,15 +286,16 @@ services:
   cross-seed:
     image: ghcr.io/cross-seed/cross-seed:latest
     container_name: cross-seed
-    network_mode: "service:gluetun"
+    profiles: ["donotstart"]
+    #network_mode: "service:gluetun"
     user: ${PUID}:${PGID}
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
     volumes:
-      - ${BASE_PATH}/cross-seed/config:/config #To configure you have to manually nano the config file
-      - ${BASE_PATH}/qbittorent/config/qBittorrent/BT_backup:/torrents:ro # your torrent clients .torrent cache, can and should be mounted read-only (e.g. qbit: `BT_Backup` | deluge: `state` | transmission: `transmission/torrents` | rtorrent: session dir from `.rtorrent.rc`)
-      - ${MEDIA_SHARE}/torrents/cross-seed:/data/cross-seeds
+      - ${BASE_PATH}\cross-seed\config:/config #To configure you have to manually nano the config file
+      - ${BASE_PATH}\qbittorent\config\qBittorrent\BT_backup:/torrents:ro # your torrent clients .torrent cache, can and should be mounted read-only (e.g. qbit: `BT_Backup` | deluge: `state` | transmission: `transmission/torrents` | rtorrent: session dir from `.rtorrent.rc`)
+      - ${MEDIA_SHARE}\torrents\cross-seed:/data/cross-seeds
       # - ${MEDIA_SHARE}/cross-seed/current-cross-seeds:/data/cross-seeds # A place to temp save current cross seed .torrent files
       #- ${MEDIA_SHARE}/downloads:/data # OPTIONAL!!! this is dataDir path (for data-based matching) - will need to replicate your torrent client's container path (like Arr's do)
     command: daemon # this enables the search mode, change to daemon to specifically run the daemon
@@ -281,10 +304,11 @@ services:
   wizarr:
     container_name: wizarr
     image: ghcr.io/wizarrrr/wizarr:latest
+    profiles: ["donotstart"]
     ports:
       - 5690:5690
     volumes:
-      - ${BASE_PATH}/wizarr/data/database:/data/database
+      - ${BASE_PATH}\wizarr\data\database:/data/database
     networks:
       - proxy
       - starr
@@ -306,7 +330,7 @@ services:
       # You need at least this one volume mapped so Unpackerr can find your files to extract.
       # Make sure this matches your Starr apps; the folder mount (/downloads or /data) should be identical.
       - ${MEDIA_SHARE}:/data
-      - ${BASE_PATH}/unpackerr/config:/config
+      - ${BASE_PATH}\unpackerr\config:/config
     restart: always
     # What you see below are defaults for this compose. You only need to modify things specific to your environment.
     # Remove apps and feature configs you do not use or need. 
@@ -333,12 +357,13 @@ services:
     networks:
       - starr
 
+  #Cabernett - Cabernet allows control of IPTV streams
   cabernet:
     image: ghcr.io/cabernetwork/cabernet:latest
     container_name: cabernet
     volumes:
-      - ${BASE_PATH}/cabernet/extensions:/app/plugins_ext
-      - ${BASE_PATH}/cabernet/data:/app/data
+      - ${BASE_PATH}\cabernet\extensions:/app/plugins_ext
+      - ${BASE_PATH}\cabernet\data:/app/data
     ports:
       - 5004:5004/tcp
       - 6077:6077/tcp
@@ -349,9 +374,11 @@ services:
     networks:
       - proxy
       
+  #Gluetun - VPN client in for multiple VPN providers
   gluetun:
     image: qmcgaw/gluetun:latest
     container_name: gluetun
+    profiles: ["donotstart"]
     cap_add:
       - NET_ADMIN
     devices:
@@ -369,8 +396,8 @@ services:
       - PUBLICIP_API_TOKEN=${PUBLICIP_TOKEN}
     ports:
       - 2468:2468/tcp # cross-seed
-      - 8080:8080/tcp # qBit
-      - 8694:8694/tcp # qBit
+      - 1337:1337/tcp # qBit WebUI
+      - 1338:1338/tcp # qBit Torrenting
       - 5656:5656/tcp # kapowarr
       - 8191:8191/tcp # flaresolverr
       - 9696:9696/tcp # prowlarr
@@ -382,20 +409,22 @@ services:
     # IF VPN CANNOT CONNECT, USE BELOW COMMAND TO UPDATE SERVERS.
     # command: update -enduser -providers mullvad
 
+  #Homarr - Customizable browser's home page to interact with your homeserver's Docker containers
   homarr:
     container_name: homarr
     image: ghcr.io/ajnart/homarr:latest
     restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock # Optional, only if you want docker integration
-      - ${BASE_PATH}/homarr/configs:/app/data/configs
-      - ${BASE_PATH}/homarr/icons:/app/public/icons
-      - ${BASE_PATH}/homarr/data:/data
+      - ${BASE_PATH}\homarr\configs:/app/data/configs
+      - ${BASE_PATH}\homarr\icons:/app/public/icons
+      - ${BASE_PATH}\homarr\data:/data
     ports:
       - 7575:7575
     networks:
       - proxy
 
+  #Decluttarr - Watches radarr, sonarr, lidarr, readarr and whisparr download queues and removes downloads if they become stalled or no longer needed. 
   decluttarr:
     image: ghcr.io/manimatter/decluttarr:latest
     container_name: decluttarr
@@ -445,7 +474,7 @@ services:
      READARR_URL: http://readarr:8787
      READARR_KEY: $READARR_KEY
      ## qBitorrent
-     QBITTORRENT_URL: http://gluetun:8080
+     QBITTORRENT_URL: http://qbittorrent:1337
      QBITTORRENT_USERNAME: $QBIT_USER
      QBITTORRENT_PASSWORD: $QBIT_PASS
     networks:
@@ -455,12 +484,13 @@ services:
   jellystat-db:
     image: postgres:15.2
     container_name: jellystat-db
+    profiles: ["donotstart"]
     environment:
       POSTGRES_DB: 'jfstat'
       POSTGRES_USER: ${JELLYSTATDB_USER:-postgres}
       POSTGRES_PASSWORD: ${JELLYSTATDB_PASS:-password}
     volumes:
-      - ${BASE_PATH}/jellystat/postgres-data:/var/lib/postgresql/data # Mounting the volume
+      - ${BASE_PATH}\jellystat\postgres-data:/var/lib/postgresql/data # Mounting the volume
     restart: unless-stopped
     networks:
       - jellystat
@@ -468,6 +498,7 @@ services:
   jellystat:
     image: cyfershepard/jellystat:latest
     container_name: jellystat
+    profiles: ["donotstart"]
     environment:
       POSTGRES_USER: ${JELLYSTATDB_USER:-postgres}
       POSTGRES_PASSWORD: ${JELLYSTATDB_PASS:-password}
@@ -477,7 +508,7 @@ services:
     ports:
       - 3000:3000 #Server Port
     volumes:
-      - ${BASE_PATH}/jellystat/postgres-backup:/app/backend/backup-data # Mounting the volume
+      - ${BASE_PATH}\jellystat\postgres-backup:/app/backend/backup-data # Mounting the volume
     depends_on:
       - jellystat-db
     restart: unless-stopped

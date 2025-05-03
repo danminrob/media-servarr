@@ -185,6 +185,8 @@ services:
       - starr
     ports:
       - 5055:5055
+    dns:
+      - 8.8.8.8
     restart: unless-stopped
     
   #Flaresolerr - Used as a proxy server to bypass Cloudflare and DDoS-GUARD protection.
@@ -216,7 +218,7 @@ services:
       - PGID=${PGID}
       - TZ=${TZ}
       - WEBUI_PORT=1337
-      - TORRENTING_PORT=8694 #Make sure to port forward this port in your router so you can seed more effectively
+      - TORRENTING_PORT=1338 #8694Make sure to port forward this port in your router so you can seed more effectively
       - UMASK=002
     networks:
       - default

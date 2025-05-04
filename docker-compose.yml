@@ -47,6 +47,26 @@ services:
     volumes:
       - ${BASE_PATH}\navidrome\data:/data
       - ${MEDIA_SHARE}\media\music:/music:ro
+
+  #tinymediamanager
+  tinymediamanager:
+    image: tinymediamanager/tinymediamanager:latest
+    container_name: tinymediamanager
+    environment:
+      - USER_ID=1000
+      - GROUP_ID=100
+      - ALLOW_DIRECT_VNC=true
+      - LC_ALL=es_M.UTF-8
+      - LANG=es_MX.UTF-8
+    volumes:
+      - ${BASE_PATH}\tinymediamanager:/data
+      - ${MEDIA_SHARE}\media\movie:/media/movies
+      - ${MEDIA_SHARE}\media\series:/media/tv_shows
+      - ${MEDIA_SHARE}\media\anime:/media/animes
+    ports:
+      - 5900:5900 # VNC port
+      - 4000:4000 # Webinterface
+    restart: unless-stopped
     
   #Radarr - used to find movies automatically
   radarr:

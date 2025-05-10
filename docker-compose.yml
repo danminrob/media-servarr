@@ -379,6 +379,16 @@ services:
     networks:
       - starr
 
+  #TheLounge - IRC Client
+  thelounge:
+    image: ghcr.io/thelounge/thelounge:latest
+    container_name: thelounge
+    ports:
+      - 9000:9000
+    restart: always
+    volumes:
+      - ${BASE_PATH}\thelounge\config:/var/opt/thelounge
+
   #Cabernett - Cabernet allows control of IPTV streams
   cabernet:
     image: ghcr.io/cabernetwork/cabernet:latest

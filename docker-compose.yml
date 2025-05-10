@@ -188,6 +188,8 @@ services:
       - PGID=${PGID}
     volumes:
       - ${BASE_PATH}\autobrr\config:/config
+    ports:
+      - 7474:7474
 
   #jellyseer - allows users to request media on their own
   jellyseerr:
@@ -227,8 +229,6 @@ services:
     restart: unless-stopped
       
   #Qbittorent - torrenting software
-  #
-  #You can also use RuTorrent, Transmisson or Deluge
   qbittorrent:
     image: lscr.io/linuxserver/qbittorrent:latest
     container_name: qbittorrent
@@ -383,6 +383,7 @@ services:
   cabernet:
     image: ghcr.io/cabernetwork/cabernet:latest
     container_name: cabernet
+    profiles: ["donotstart"]
     volumes:
       - ${BASE_PATH}\cabernet\extensions:/app/plugins_ext
       - ${BASE_PATH}\cabernet\data:/app/data

@@ -180,6 +180,7 @@ services:
   autobrr:
     container_name: autobrr
     image: ghcr.io/autobrr/autobrr:latest
+    profiles: ["donotstart"]
     restart: unless-stopped
     #network_mode: "service:gluetun"
     environment:

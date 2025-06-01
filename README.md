@@ -25,12 +25,13 @@ This Stack includes the following services:
 - **Homarr:** Used as a dashboard for docker containers with integrations for the *arr, torrent, and Jellyfin apps.
 - **Decluttarr:** Used to maintain/clean your *arr app queues and downloads.
 - **Jellystat:** Used to monitor the usage of each user or content on your jellyfin server. Disabled by default.
+- **tinyMediaManager** Media art scrapper.
 
 ## Dependencies
 
 1. Linux
 2. Docker / Docker Compose
-3. OPTIONAL: Portainer - Docker GUI
+3. OPTIONAL but HIGHLY RECOMMENDED: Portainer - Docker GUI
 
 ## How to Use - Using portainer
 1. Create a new stack using the Repository build method
@@ -63,4 +64,16 @@ This Stack includes the following services:
 ## Recommendations
 
 1. Install portainer to manage and monitor containers
+2. There's A LOT to be configured at each app, read carefully
+3. Save your "BASE_SHARE" contents once you are done
 
+## Ports directory
+- **Jellyfin** http://localhost:8096
+- **Jellyseer** http://localhost:5055
+- **qBittorent** http://localhost:1337
+- **Radarr** http://localhost:7878
+- **Sonarr** http://localhost:8989
+- **Lidarr** http://localhost:8686
+- **Readarr** http://localhost:8787
+- **Homarr** http://localhost:7575
+- **tinyMediaManager** http://localhost:4000

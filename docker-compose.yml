@@ -40,29 +40,29 @@ services:
   navidrome:
     image: deluan/navidrome:latest
     container_name: navidrome
-    user: 1000:1000
+    user: ${PUID}:${PGID}
     ports:
       - 4533:4533
     restart: unless-stopped
     volumes:
-      - ${BASE_PATH}\navidrome\data:/data
-      - ${MEDIA_SHARE}\media\music:/music:ro
+      - ${BASE_PATH}/navidrome/data:/data
+      - ${MEDIA_SHARE}/media/music:/music:ro
 
   #tinymediamanager
   tinymediamanager:
     image: tinymediamanager/tinymediamanager:latest
     container_name: tinymediamanager
     environment:
-      - USER_ID=1000
-      - GROUP_ID=100
+      - USER_ID=${PUID}
+      - GROUP_ID=${PGID}
       - ALLOW_DIRECT_VNC=true
       - LC_ALL=es_M.UTF-8
       - LANG=es_MX.UTF-8
     volumes:
-      - ${BASE_PATH}\tinymediamanager:/data
-      - ${MEDIA_SHARE}\media\movie:/media/movies
-      - ${MEDIA_SHARE}\media\series:/media/tv_shows
-      - ${MEDIA_SHARE}\media\anime:/media/animes
+      - ${BASE_PATH}/tinymediamanager:/data
+      - ${MEDIA_SHARE}/media/movie:/media/movies
+      - ${MEDIA_SHARE}/media/series:/media/tv_shows
+      - ${MEDIA_SHARE}/media/anime:/media/animes
     ports:
       - 5900:5900 # VNC port
       - 4000:4000 # Webinterface
@@ -77,7 +77,7 @@ services:
       - PGID=${PGID}
       - TZ=${TZ}
     volumes:
-      - ${BASE_PATH}\radarr\config:/config
+      - ${BASE_PATH}/radarr/config:/config
       - ${MEDIA_SHARE}:/data #Access to the entire /media
     ports:
       - 7878:7878
@@ -97,7 +97,7 @@ services:
       - PGID=${PGID}
       - TZ=${TZ}
     volumes:
-      - ${BASE_PATH}\sonarr\config:/config
+      - ${BASE_PATH}/sonarr/config:/config
       - ${MEDIA_SHARE}:/data #Access to the entire /media
     ports:
       - 8989:8989
@@ -117,7 +117,7 @@ services:
       - PGID=${PGID}
       - TZ=${TZ}
     volumes:
-      - ${BASE_PATH}\readarr\config:/config
+      - ${BASE_PATH}/readarr/config:/config
       - ${MEDIA_SHARE}:/data
     ports:
       - 8787:8787
@@ -135,7 +135,7 @@ services:
       - PGID=${PGID}
       - TZ=${TZ}
     volumes:
-      - ${BASE_PATH}\lidarr\config:/config
+      - ${BASE_PATH}/lidarr/config:/config
       - ${MEDIA_SHARE}:/data
     ports:
       - 8686:8686
@@ -156,8 +156,8 @@ services:
       - PGID=${PGID}
       - TZ=${TZ}
     volumes:
-      - ${BASE_PATH}\kapowarr\config:/app/db
-      - ${MEDIA_SHARE}\temp_downloads:/app/temp_downloads
+      - ${BASE_PATH}/kapowarr/config:/app/db
+      - ${MEDIA_SHARE}/temp_downloads:/app/temp_downloads
       - ${MEDIA_SHARE}:/data
     restart: unless-stopped
     
@@ -173,7 +173,7 @@ services:
       - PGID=${PGID}
       - TZ=${TZ}
     volumes:
-      - ${BASE_PATH}\prowlarr\config:/config
+      - ${BASE_PATH}/prowlarr/config:/config
     restart: unless-stopped
     
   #Autobrr - used to grab torrents using the trackers IRC channel - Increases seeding due to grabbing content before RSS feed
@@ -188,7 +188,7 @@ services:
       - PUID=${PUID}
       - PGID=${PGID}
     volumes:
-      - ${BASE_PATH}\autobrr\config:/config
+      - ${BASE_PATH}/autobrr/config:/config
     ports:
       - 7474:7474
 
@@ -201,7 +201,7 @@ services:
       - PGID=${PGID}
       - TZ=${TZ}
     volumes:
-      - ${BASE_PATH}\jellyseerr\config:/app/config
+      - ${BASE_PATH}/jellyseerr/config:/app/config
       - ${MEDIA_SHARE}:/data #Access to the entire ${MEDIA_SHARE}
     networks:
       - proxy
@@ -248,7 +248,7 @@ services:
       - 1337:1337
       - 1338:1338
     volumes:
-      - ${BASE_PATH}\qbittorent\config:/config
+      - ${BASE_PATH}/qbittorent/config:/config
       - ${MEDIA_SHARE}:/data
     restart: unless-stopped
 
@@ -275,11 +275,11 @@ services:
       - inContainer=true
       - ffmpegVersion=6
     volumes:
-      - ${BASE_PATH}\tdarr\server:/app/server
-      - ${BASE_PATH}\tdarr\configs:/app/configs
-      - ${BASE_PATH}\tdarr\logs:/app/logs
+      - ${BASE_PATH}/tdarr/server:/app/server
+      - ${BASE_PATH}/tdarr/configs:/app/configs
+      - ${BASE_PATH}/tdarr/logs:/app/logs
       - ${MEDIA_SHARE}:/data
-      - ${TRANSCODE_PATH:-/transcode_cache}:/temp
+      - ${MEDIA_SHARE}/transcode_cache}:/temp
     devices:
      - /dev/dri:/dev/dri #Required for HW transcoding /share QuickSync
     networks:
@@ -295,7 +295,7 @@ services:
       - PGID=${PGID}
       - TZ=${TZ}
     volumes:
-      - ${BASE_PATH}\bazarr\config:/config
+      - ${BASE_PATH}/bazarr/config:/config
       - ${MEDIA_SHARE}:/data
     ports:
       - 6767:6767
@@ -316,9 +316,9 @@ services:
       - PUID=${PUID}
       - PGID=${PGID}
     volumes:
-      - ${BASE_PATH}\cross-seed\config:/config #To configure you have to manually nano the config file
-      - ${BASE_PATH}\qbittorent\config\qBittorrent\BT_backup:/torrents:ro # your torrent clients .torrent cache, can and should be mounted read-only (e.g. qbit: `BT_Backup` | deluge: `state` | transmission: `transmission/torrents` | rtorrent: session dir from `.rtorrent.rc`)
-      - ${MEDIA_SHARE}\torrents\cross-seed:/data/cross-seeds
+      - ${BASE_PATH}/cross-seed/config:/config #To configure you have to manually nano the config file
+      - ${BASE_PATH}/qbittorent/config/qBittorrent/BT_backup:/torrents:ro # your torrent clients .torrent cache, can and should be mounted read-only (e.g. qbit: `BT_Backup` | deluge: `state` | transmission: `transmission/torrents` | rtorrent: session dir from `.rtorrent.rc`)
+      - ${MEDIA_SHARE}/torrents/cross-seed:/data/cross-seeds
       # - ${MEDIA_SHARE}/cross-seed/current-cross-seeds:/data/cross-seeds # A place to temp save current cross seed .torrent files
       #- ${MEDIA_SHARE}/downloads:/data # OPTIONAL!!! this is dataDir path (for data-based matching) - will need to replicate your torrent client's container path (like Arr's do)
     command: daemon # this enables the search mode, change to daemon to specifically run the daemon
@@ -331,7 +331,7 @@ services:
     ports:
       - 5690:5690
     volumes:
-      - ${BASE_PATH}\wizarr\data\database:/data/database
+      - ${BASE_PATH}/wizarr/data/database:/data/database
     networks:
       - proxy
       - starr
@@ -343,7 +343,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
-      - 9999:8080
+      - 9999:9999
     
   #Unpacker - Used to unzip zipped files
   unpackerr:
@@ -353,7 +353,7 @@ services:
       # You need at least this one volume mapped so Unpackerr can find your files to extract.
       # Make sure this matches your Starr apps; the folder mount (/downloads or /data) should be identical.
       - ${MEDIA_SHARE}:/data
-      - ${BASE_PATH}\unpackerr\config:/config
+      - ${BASE_PATH}/unpackerr/config:/config
     restart: always
     # What you see below are defaults for this compose. You only need to modify things specific to your environment.
     # Remove apps and feature configs you do not use or need. 
@@ -389,7 +389,7 @@ services:
       - 9000:9000
     restart: always
     volumes:
-      - ${BASE_PATH}\thelounge\config:/var/opt/thelounge
+      - ${BASE_PATH}/thelounge/config:/var/opt/thelounge
 
   #Cabernett - Cabernet allows control of IPTV streams
   cabernet:
@@ -397,8 +397,8 @@ services:
     container_name: cabernet
     profiles: ["donotstart"]
     volumes:
-      - ${BASE_PATH}\cabernet\extensions:/app/plugins_ext
-      - ${BASE_PATH}\cabernet\data:/app/data
+      - ${BASE_PATH}/cabernet/extensions:/app/plugins_ext
+      - ${BASE_PATH}/cabernet/data:/app/data
     ports:
       - 5004:5004/tcp
       - 6077:6077/tcp
@@ -451,9 +451,9 @@ services:
     restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock # Optional, only if you want docker integration
-      - ${BASE_PATH}\homarr\configs:/app/data/configs
-      - ${BASE_PATH}\homarr\icons:/app/public/icons
-      - ${BASE_PATH}\homarr\data:/data
+      - ${BASE_PATH}/homarr/configs:/app/data/configs
+      - ${BASE_PATH}/homarr/icons:/app/public/icons
+      - ${BASE_PATH}/homarr/data:/data
     ports:
       - 7575:7575
     networks:
@@ -525,7 +525,7 @@ services:
       POSTGRES_USER: ${JELLYSTATDB_USER:-postgres}
       POSTGRES_PASSWORD: ${JELLYSTATDB_PASS:-password}
     volumes:
-      - ${BASE_PATH}\jellystat\postgres-data:/var/lib/postgresql/data # Mounting the volume
+      - ${BASE_PATH}/jellystat/postgres-data:/var/lib/postgresql/data # Mounting the volume
     restart: unless-stopped
     networks:
       - jellystat
@@ -543,7 +543,7 @@ services:
     ports:
       - 3000:3000 #Server Port
     volumes:
-      - ${BASE_PATH}\jellystat\postgres-backup:/app/backend/backup-data # Mounting the volume
+      - ${BASE_PATH}/jellystat/postgres-backup:/app/backend/backup-data # Mounting the volume
     depends_on:
       - jellystat-db
     restart: unless-stopped

@@ -42,7 +42,7 @@ This Stack includes the following services:
 - PUID=1000
 - PGID=1000
 - TZ=America/Mexico_City
-- BASE_SHARE=/mnt/LinuxD/media_servarr/config/ (Local directory where the configuration of the diferent services will be saved)
+- BASE_PATH=/mnt/LinuxD/media_servarr/config/ (Local directory where the configuration of the diferent services will be saved)
 - MEDIA_SHARE=/mnt/LinuxD/media_servarr/content/ (Local directory where the media downloaded by the diferent services will be saved)
 - QBIT_USER=admin
 - QBIT_PASS=Jhrzx$LFY5s# (Access the qbittorrent container logs to obtain the temporaly password, use it to acces the WebUI http://localhost:1337/ , go to Options -> WebUI and set your own Password)
@@ -65,7 +65,7 @@ This Stack includes the following services:
 
 1. Install portainer to manage and monitor containers
 2. There's A LOT to be configured at each app, read carefully
-3. Save your "BASE_SHARE" contents once you are done
+3. Backup your "BASE_PATH" contents once you are done
 
 ## Ports directory
 - **Jellyfin** http://localhost:8096

@@ -254,6 +254,8 @@ services:
     volumes:
       - ${BASE_PATH}/qbittorent/config:/config
       - ${MEDIA_SHARE}:/data
+    dns:
+      - 8.8.8.8
     restart: unless-stopped
 
   #Tdarr - to transcode videos from one format to another like x265 or H.265

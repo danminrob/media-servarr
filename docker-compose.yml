@@ -244,7 +244,7 @@ services:
       - TZ=${TZ}
       - WEBUI_PORT=1337
       - TORRENTING_PORT=1338 #8694Make sure to port forward this port in your router so you can seed more effectively
-      - UMASK=002
+      - UMASK=000
     networks:
       - default
       - starr
@@ -254,6 +254,7 @@ services:
     volumes:
       - ${BASE_PATH}/qbittorent/config:/config
       - ${MEDIA_SHARE}:/data
+      - ${MEDIA_SHARE}/temp_downloads:/downloads
     dns:
       - 8.8.8.8
     restart: unless-stopped

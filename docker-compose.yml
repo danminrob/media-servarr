@@ -79,6 +79,7 @@ services:
     volumes:
       - ${BASE_PATH}/radarr/config:/config
       - ${MEDIA_SHARE}:/data #Access to the entire /media
+      - ${MEDIA_SHARE}/temp_downloads:/downloads
     ports:
       - 7878:7878
     networks:

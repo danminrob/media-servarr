@@ -11,7 +11,22 @@ networks:
     #external: true
       
 services:
-  # REVERSE PROXY IS IN OTHER DOCKER COMPOSE STACK
+  #Plex - Display Media (Use this or jellyfin)
+  plex:
+    image: plexinc/pms-docker
+    container_name: plex
+    environment:
+      - PLEX_CLAIM= # Your Plex claim token (optional for setup)
+      - ADVERTISE_IP=http://192.168.0.135:32400
+      - PLEX_UID=1000
+      - PLEX_GID=1000
+      - TZ=${TZ}
+    volumes:
+      - ${BASE_PATH}/plex/config:/config
+      - ${MEDIA_SHARE}/media/plex:/data
+    ports:
+      - 32400:32400
+    restart: unless-stopped
 
   #Jellyfin - used to display the media
   #This can also be replaced by Emby/Plex

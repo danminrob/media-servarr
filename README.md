@@ -13,7 +13,7 @@ This Stack includes the following services:
 - **Lidarr:** Used to grab music.
 - **Kapowarr** Used to grab comics.
 - **Prowlarr:** Indexer manager for Radarr and Sonarr.
-- **Jellyseerr:** Request management and monitoring for Jellyfin.
+- **Seerr:** Request management and monitoring for Jellyfin and Plex.
 - **Gluetun:** VPN container with WireGuard support for secure browsing. Disabled by default.
 - **Qbittorrent:** BitTorrent client with VPN support.
 - **Tdarr:** Pre-transcodes your media to decrease file sizes
@@ -59,7 +59,7 @@ This Stack includes the following services:
    3. Lidarr - Music
    4. Readarr - Books
    5. Kapowarr - Comics
-3. Jellyseer is a platform which combines the request system in radarr and sonarr to make a nice UI/UX to find and auto download the content.
+3. Seerr is a platform which combines the request system in radarr and sonarr to make a nice UI/UX to find and auto download the content.
 
 ## Recommendations
 
@@ -69,7 +69,7 @@ This Stack includes the following services:
 
 ## Ports directory
 - **Jellyfin** http://localhost:8096
-- **Jellyseer** http://localhost:5055
+- **Seerr** http://localhost:5055
 - **qBittorent** http://localhost:1337
 - **Radarr** http://localhost:7878
 - **Sonarr** http://localhost:8989

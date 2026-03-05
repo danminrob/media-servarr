@@ -211,16 +211,17 @@ services:
     ports:
       - 7474:7474
 
-  #jellyseer - allows users to request media on their own
-  jellyseerr:
-    image: fallenbagel/jellyseerr:latest
-    container_name: jellyseerr
+  #Seerr - allows users to request media on their own
+  seerr:
+    image: ghcr.io/seerr-team/seerr:latest
+    init: true
+    container_name: seerr
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TZ}
     volumes:
-      - ${BASE_PATH}/jellyseerr/config:/app/config
+      - ${BASE_PATH}/seerr/config:/app/config
       - ${MEDIA_SHARE}:/data #Access to the entire ${MEDIA_SHARE}
     networks:
       - proxy
